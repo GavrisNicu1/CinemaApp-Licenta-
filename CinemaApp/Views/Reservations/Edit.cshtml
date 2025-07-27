@@ -1,0 +1,75 @@
+﻿@model CinemaApp.Models.Reservation
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+
+    <h4>Reservation</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ReservationId" />
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SeatNumber" class="control-label"></label>
+                    <input asp-for="SeatNumber" class="form-control" />
+                    <span asp-validation-for="SeatNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="HallId" class="control-label"></label>
+                    <select asp-for="HallId" class="form-control" asp-items="ViewBag.HallId"></select>
+                    <span asp-validation-for="HallId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MovieId" class="control-label"></label>
+                    <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
+                    <span asp-validation-for="MovieId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReservationDate" class="control-label"></label>
+                    <input asp-for="ReservationDate" class="form-control" />
+                    <span asp-validation-for="ReservationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

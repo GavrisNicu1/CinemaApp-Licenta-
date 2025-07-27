@@ -1,0 +1,77 @@
+﻿@model CinemaApp.Models.Movie
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create Movie</title>
+</head>
+<body>
+
+    <h4>Create Movie</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="YearOfRelease" class="control-label"></label>
+                    <input asp-for="YearOfRelease" class="form-control" />
+                    <span asp-validation-for="YearOfRelease" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Language" class="control-label"></label>
+                    <input asp-for="Language" class="form-control" />
+                    <span asp-validation-for="Language" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Duration" class="control-label"></label>
+                    <input asp-for="Duration" class="form-control" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Actors</label><br />
+                    @foreach (var actor in (List<CinemaApp.Models.Actor>)ViewBag.Actors)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   name="SelectedActorIds"
+                                   value="@actor.ActorId"
+                                   id="actor_@actor.ActorId" />
+                            <label class="form-check-label" for="actor_@actor.ActorId">
+                                @actor.FirstName @actor.LastName
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

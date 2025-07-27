@@ -1,0 +1,39 @@
+﻿@model IEnumerable<CinemaApp.Models.HallMovie>
+
+@{
+    ViewData["Title"] = "Program proiecții";
+}
+
+<h2>Program proiecții</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adaugă film într-o sală</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Film</th>
+            <th>Sală</th>
+            <th>Dată și oră început</th>
+            <th>Dată și oră sfârșit</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Movie?.Title</td>
+                <td>@item.Hall?.HallName</td>
+                <td>@item.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@item.EndDate.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-hallId="@item.HallId" asp-route-movieId="@item.MovieId" class="btn btn-sm btn-warning">Editare</a> |
+                    <a asp-action="Details" asp-route-hallId="@item.HallId" asp-route-movieId="@item.MovieId" class="btn btn-sm btn-info">Detalii</a> |
+                    <a asp-action="Delete" asp-route-hallId="@item.HallId" asp-route-movieId="@item.MovieId" class="btn btn-sm btn-danger">Șterge</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
