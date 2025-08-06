@@ -1,13 +1,15 @@
-using CinemaApp.Data;
+﻿using CinemaApp.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adaugă suport pentru MVC
 builder.Services.AddControllersWithViews();
 
-// Adaug� conexiunea la SQL Server
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+// Adaugă conexiunea la SQL Server
+builder.Services.AddDbContext<CinemaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
@@ -18,10 +20,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// app.UseHttpsRedirection();
+// Middleware aplicație
+// app.UseHttpsRedirection(); // Activează dacă folosești HTTPS
 app.UseStaticFiles();
 app.UseRouting();
 
+// Rute implicite
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Movies}/{action=Index}/{id?}");

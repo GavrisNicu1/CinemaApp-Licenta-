@@ -12,9 +12,9 @@ namespace CinemaApp.Controllers
 {
     public class ReservationsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CinemaDbContext _context;
 
-        public ReservationsController(ApplicationDbContext context)
+        public ReservationsController(CinemaDbContext context)
         {
             _context = context;
         }
@@ -203,5 +203,100 @@ namespace CinemaApp.Controllers
         {
             return _context.Reservations.Any(e => e.ReservationId == id);
         }
+
+        // GET: Reservations/CompleteReservation
+        [HttpGet]
+        public IActionResult CompleteReservation(int hallId, int movieId, string seatNumber, DateTime reservationDate)
+        {
+            ViewBag.HallId = hallId;
+            ViewBag.MovieId = movieId;
+            ViewBag.SeatNumber = seatNumber;
+            ViewBag.ReservationDate = reservationDate;
+
+            return View();
+        }
+
+        // POST: Reservations/CompleteReservation
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteReservation([Bind("FirstName,LastName,PhoneNumber,SeatNumber,HallId,MovieId,ReservationDate")] Reservation reservation)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(reservation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(reservation);
+        }
+        public IActionResult ChooseProjection()
+        {
+            var projections = _context.HallMovies
+                .Include(hm => hm.Movie)
+                .Include(hm => hm.Hall)
+                .Select(hm => new
+                {
+                    HallId = hm.HallId,
+                    MovieId = hm.MovieId,
+                    StartDate = hm.StartDate,
+                    Text = $"{hm.Movie.Title} în sala {hm.Hall.HallName} la {hm.StartDate:dd.MM.yyyy HH:mm}"
+                }).ToList();
+
+            ViewBag.ProjectionValues = projections;
+
+            return View();
+        }
+
+        // GET: Reservations/SelectSeat
+        [HttpGet]
+        public IActionResult SelectSeat(int hallId, int movieId, DateTime reservationDate)
+        {
+            var reservedSeats = _context.Reservations
+                .Where(r => r.HallId == hallId && r.MovieId == movieId && r.ReservationDate == reservationDate)
+                .Select(r => r.SeatNumber)
+                .ToHashSet();
+
+            var seats = new List<SeatViewModel>();
+            string[] rows = { "A", "B", "C", "D", "E" };
+            int columns = 10;
+
+            foreach (var row in rows)
+            {
+                for (int col = 1; col <= columns; col++)
+                {
+                    string seatNumber = $"{row}{col}";
+                    seats.Add(new SeatViewModel
+                    {
+                        Row = row,
+                        Column = col,
+                        IsReserved = reservedSeats.Contains(seatNumber),
+                        Price = GetPrice(row) // poți schimba logica după nevoie
+                    });
+                }
+            }
+
+            ViewBag.HallId = hallId;
+            ViewBag.MovieId = movieId;
+            ViewBag.ReservationDate = reservationDate;
+
+            return View(seats);
+        }
+
+        // Preț personalizat în funcție de rând (opțional)
+        private decimal GetPrice(string row)
+        {
+            return row switch
+            {
+                "A" => 25,
+                "B" => 23,
+                "C" => 21,
+                "D" => 20,
+                _ => 18
+            };
+        }
+
+
+
     }
 }

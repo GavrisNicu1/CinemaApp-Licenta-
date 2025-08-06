@@ -7,14 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CinemaApp.Data;
 using CinemaApp.Models;
-
+using CinemaApp.Data; // Adaugă asta SUS, dacă lipsește
 namespace CinemaApp.Controllers
 {
+  
+
     public class ActorsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CinemaDbContext _context;
 
-        public ActorsController(ApplicationDbContext context)
+        public ActorsController(CinemaDbContext context)    
+
         {
             _context = context;
         }

@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Alege proiecția";
+    var projections = ViewBag.ProjectionValues;
+}
+
+<h2>Alege filmul, sala și ora</h2>
+
+<form asp-controller="Reservations" asp-action="SelectSeat" method="get">
+    <select name="hallMovieValue" class="form-select mb-3">
+        @foreach (var item in projections)
+        {
+            <option value="@item.HallId|@item.MovieId|@item.StartDate.ToString("s")">@item.Text</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-primary">Continuă la alegerea locului</button>
+</form>

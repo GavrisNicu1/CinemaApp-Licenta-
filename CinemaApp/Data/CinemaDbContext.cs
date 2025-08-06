@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore; // <- Fără asta, DbContext și DbSet nu sunt recunoscute
+
 using CinemaApp.Models;
 
 namespace CinemaApp.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class CinemaDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public CinemaDbContext(DbContextOptions<CinemaDbContext> options)
             : base(options)
         {
         }
@@ -20,9 +21,7 @@ namespace CinemaApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // MovieActor: compus (MovieId + ActorId)
+            // Configurare many-to-many Movie <-> Actor
             modelBuilder.Entity<MovieActor>()
                 .HasKey(ma => new { ma.MovieId, ma.ActorId });
 
@@ -36,39 +35,43 @@ namespace CinemaApp.Data
                 .WithMany(a => a.MovieActors)
                 .HasForeignKey(ma => ma.ActorId);
 
-            // HallMovie: compus (HallId + MovieId)
+            // Configurare many-to-many Hall <-> Movie
             modelBuilder.Entity<HallMovie>()
                 .HasKey(hm => new { hm.HallId, hm.MovieId });
-
-            modelBuilder.Entity<HallMovie>()
-                .HasOne(hm => hm.Movie)
-                .WithMany(m => m.HallMovies)
-                .HasForeignKey(hm => hm.MovieId);
 
             modelBuilder.Entity<HallMovie>()
                 .HasOne(hm => hm.Hall)
                 .WithMany(h => h.HallMovies)
                 .HasForeignKey(hm => hm.HallId);
+                
+            modelBuilder.Entity<HallMovie>()
+                .HasOne(hm => hm.Movie)
+                .WithMany(m => m.HallMovies)
+                .HasForeignKey(hm => hm.MovieId);
 
-            // Genre → Movie (FK)
-            modelBuilder.Entity<Genre>()
-                .HasOne(g => g.Movie)
-                .WithMany(m => m.Genres)
-                .HasForeignKey(g => g.MovieId);
-
-            // Reservation → Hall & Movie (FK)
-           
+            // Relație către Hall
             modelBuilder.Entity<Reservation>()
-                .HasKey(r => r.ReservationId);
+                .HasOne(r => r.Hall)
+                .WithMany()
+                .HasForeignKey(r => r.HallId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Relația cu HallMovie (cheie compusă)
+            // Relație către Movie
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.Movie)
+                .WithMany()
+                .HasForeignKey(r => r.MovieId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Relație compusă către HallMovie
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.HallMovie)
                 .WithMany()
-                .HasForeignKey(r => new { r.HallId, r.MovieId });
+                .HasForeignKey(r => new { r.HallId, r.MovieId })
+                .OnDelete(DeleteBehavior.Restrict); // Sau NoAction
 
 
-
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

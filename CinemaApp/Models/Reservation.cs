@@ -24,8 +24,7 @@ namespace CinemaApp.Models
         // Cheie străină compusă spre HallMovie
         public int HallId { get; set; }
         public int MovieId { get; set; }
-
-        [ForeignKey(nameof(HallId) + "," + nameof(MovieId))]
+       
         public HallMovie? HallMovie { get; set; }
 
         // Acces ușor la datele filmului sau salii fara sa intru in  HallMovie)

@@ -12,9 +12,9 @@ namespace CinemaApp.Controllers
 {
     public class HallMoviesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CinemaDbContext _context;
 
-        public HallMoviesController(ApplicationDbContext context)
+        public HallMoviesController(CinemaDbContext context)
         {
             _context = context;
         }

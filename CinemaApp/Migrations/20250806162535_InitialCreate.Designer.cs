@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CinemaApp.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250722211200_InitialCreate")]
+    [DbContext(typeof(CinemaDbContext))]
+    [Migration("20250806162535_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace CinemaApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -186,9 +186,9 @@ namespace CinemaApp.Migrations
 
                     b.HasKey("ReservationId");
 
-                    b.HasIndex("HallId");
-
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("HallId", "MovieId");
 
                     b.ToTable("Reservations");
                 });
@@ -247,16 +247,24 @@ namespace CinemaApp.Migrations
                     b.HasOne("CinemaApp.Models.Hall", "Hall")
                         .WithMany()
                         .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CinemaApp.Models.Movie", "Movie")
                         .WithMany()
                         .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CinemaApp.Models.HallMovie", "HallMovie")
+                        .WithMany()
+                        .HasForeignKey("HallId", "MovieId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Hall");
+
+                    b.Navigation("HallMovie");
 
                     b.Navigation("Movie");
                 });
