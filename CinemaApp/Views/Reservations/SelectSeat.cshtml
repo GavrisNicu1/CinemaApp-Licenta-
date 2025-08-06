@@ -1,0 +1,73 @@
+﻿@model IEnumerable<CinemaApp.Models.SeatViewModel>
+
+@{
+    ViewData["Title"] = "Selectează loc";
+    var hallId = ViewBag.HallId;
+    var movieId = ViewBag.MovieId;
+    var reservationDate = ViewBag.ReservationDate ?? DateTime.Now;
+}
+
+<h2>Selectează un loc</h2>
+
+<form asp-action="CompleteReservation" method="get">
+    <input type="hidden" name="hallId" value="@hallId" />
+    <input type="hidden" name="movieId" value="@movieId" />
+    <input type="hidden" name="reservationDate" value="@reservationDate.ToString("s")" />
+
+    <div class="seats">
+        @foreach (var seat in Model)
+        {
+            var cssClass = seat.IsReserved ? "reserved" : "available";
+
+            <div class="seat-box">
+                <button type="submit"
+                        name="seatNumber"
+                        value="@seat.SeatNumber"
+                        class="@cssClass"
+                        @(seat.IsReserved ? "disabled" : "")>
+                    @seat.SeatNumber
+                </button>
+                <div class="price">@seat.Price.ToString("0.00") lei</div>
+            </div>
+        }
+    </div>
+</form>
+
+<style>
+    .seats {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 600px;
+    }
+
+    .seat-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 5px;
+    }
+
+    .seats button {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+    }
+
+    .reserved {
+        background-color: red;
+        color: white;
+    }
+
+    .available {
+        background-color: green;
+        color: white;
+    }
+
+    .price {
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+</style>

@@ -134,26 +134,30 @@ namespace CinemaApp.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HallId = table.Column<int>(type: "int", nullable: false),
                     MovieId = table.Column<int>(type: "int", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SeatNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.ReservationId);
                     table.ForeignKey(
+                        name: "FK_Reservations_HallMovies_HallId_MovieId",
+                        columns: x => new { x.HallId, x.MovieId },
+                        principalTable: "HallMovies",
+                        principalColumns: new[] { "HallId", "MovieId" },
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Reservations_Halls_HallId",
                         column: x => x.HallId,
                         principalTable: "Halls",
-                        principalColumn: "HallId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "HallId");
                     table.ForeignKey(
                         name: "FK_Reservations_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
-                        principalColumn: "MovieId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "MovieId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -172,9 +176,9 @@ namespace CinemaApp.Migrations
                 column: "ActorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_HallId",
+                name: "IX_Reservations_HallId_MovieId",
                 table: "Reservations",
-                column: "HallId");
+                columns: new[] { "HallId", "MovieId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_MovieId",
@@ -189,9 +193,6 @@ namespace CinemaApp.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "HallMovies");
-
-            migrationBuilder.DropTable(
                 name: "MovieActors");
 
             migrationBuilder.DropTable(
@@ -199,6 +200,9 @@ namespace CinemaApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Actors");
+
+            migrationBuilder.DropTable(
+                name: "HallMovies");
 
             migrationBuilder.DropTable(
                 name: "Halls");
